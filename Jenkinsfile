@@ -23,34 +23,57 @@ pipeline{
 				}
 			}
 		}
-	
-		parallel {
-			stage('Deploy to Staging'){
-				steps{
-					echo 'Deploying to Staging'
-					deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
-				}
-				post{
-					success{
-						echo 'Delpoyed to staging'
+		
+		stage("Parallel") {
+		
+			steps{
+				parallel(
+					"Deploy to Staging": {
+						steps{
+							echo 'Deploying to Staging'
+							deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
+						}
+						post{
+							success{
+								echo 'Delpoyed to staging'
+							}
+							failure{
+								echo 'Failed to deploy to staging'
+							}
+						}
+					},
+					"Code-Quality Check": {
+						steps{
+							bat script: 'checkstyle:checkstyle'
+						}
+						post{
+							success{
+								echo 'Checkstyle completed'
+							}
+						}
 					}
-					failure{
-						echo 'Failed to deploy to staging'
-					}
-				}
+				)
 			}
 			
-			stage('Build'){
-				steps{
-					bat script: 'checkstyle:checkstyle'
+		}
+	
+		stage('Deploy to Production'){
+			steps{
+				echo 'Going Live - Manual approval required'
+				timeout(2){
+					input 'APprove Live Deployment?'
+				 }
+				deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8987')], contextPath: null, war: '**/*.war'
+			}
+			post{
+				success{
+					echo 'Delpoyed to production'
 				}
-				post{
-					success{
-						echo 'Checkstyle completed'
-					}
+				failure{
+					echo 'Failed to deploy to production'
 				}
 			}
 		}
+		
 	}
-	
 }
