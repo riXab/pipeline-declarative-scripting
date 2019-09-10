@@ -24,4 +24,20 @@ pipeline{
 			}
 		}
 	}
+	
+	stage('Deploy to Staging'){
+				steps{
+					echo 'Deploying to Staging'
+					deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
+				}
+				post{
+					success{
+						echo 'Delpoyed to staging'
+					}
+					failure{
+						echo 'Failed to deploy to staging'
+					}
+				}
+			}
+			
 }
