@@ -38,6 +38,6 @@ pipeline{
 						echo 'Failed to deploy to staging'
 					}
 				}
-			}
+	}
 			
 }
