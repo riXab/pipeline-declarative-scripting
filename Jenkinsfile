@@ -24,11 +24,11 @@ pipeline{
 			}
 		}
 		
-		stage("Parallel") {
+		stage('Parallel') {
 		
 			steps{
 				parallel(
-					"Deploy to Staging": {
+					'Deploy to Staging': {
 						steps{
 							echo 'Deploying to Staging'
 							deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
@@ -42,7 +42,7 @@ pipeline{
 							}
 						}
 					},
-					"Code-Quality Check": {
+					'Code-Quality Check': {
 						steps{
 							bat script: 'checkstyle:checkstyle'
 						}
