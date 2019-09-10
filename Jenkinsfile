@@ -25,36 +25,32 @@ pipeline{
 		}
 		
 		stage('Parallel') {
-		
-			steps{
-				parallel(
-					'Deploy to Staging': {
-						steps{
-							echo 'Deploying to Staging'
-							deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
+			parallel(
+				'Deploy to Staging': {
+					steps{
+						echo 'Deploying to Staging'
+						deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
+					}
+					post{
+						success{
+							echo 'Delpoyed to staging'
 						}
-						post{
-							success{
-								echo 'Delpoyed to staging'
-							}
-							failure{
-								echo 'Failed to deploy to staging'
-							}
-						}
-					},
-					'Code-Quality Check': {
-						steps{
-							bat script: 'checkstyle:checkstyle'
-						}
-						post{
-							success{
-								echo 'Checkstyle completed'
-							}
+						failure{
+							echo 'Failed to deploy to staging'
 						}
 					}
-				)
-			}
-			
+				},
+				'Code-Quality Check': {
+					steps{
+						bat script: 'checkstyle:checkstyle'
+					}
+					post{
+						success{
+							echo 'Checkstyle completed'
+						}
+					}
+				}
+			)
 		}
 	
 		stage('Deploy to Production'){
