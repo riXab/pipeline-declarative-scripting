@@ -24,12 +24,12 @@ pipeline{
 			}
 		}
 		
-		stage('Parallel') {
-			parallel(
-				'Deploy to Staging': {
+		stage('Parallel-Check-Deploy'){
+			parallel {
+				stage('Deploy to Staging'){
 					steps{
 						echo 'Deploying to Staging'
-						deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
+						deploy adapters: [tomcat8(credentialsId: 'fc29fbea-a440-4146-8bf0-dd8e0e199d22', path:'', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
 					}
 					post{
 						success{
@@ -39,8 +39,8 @@ pipeline{
 							echo 'Failed to deploy to staging'
 						}
 					}
-				},
-				'Code-Quality Check': {
+				}
+				stage('Build'){
 					steps{
 						bat script: 'checkstyle:checkstyle'
 					}
@@ -50,7 +50,7 @@ pipeline{
 						}
 					}
 				}
-			)
+			}
 		}
 	
 		stage('Deploy to Production'){
@@ -59,7 +59,7 @@ pipeline{
 				timeout(2){
 					input 'APprove Live Deployment?'
 				 }
-				deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8987')], contextPath: null, war: '**/*.war'
+				deploy adapters: [tomcat8(credentialsId: 'fc29fbea-a440-4146-8bf0-dd8e0e199d22', path:'', url: 'http://localhost:8787')], contextPath: null, war: '**/*.war'
 			}
 			post{
 				success{
