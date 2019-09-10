@@ -29,7 +29,7 @@ pipeline{
 			stage('Deploy to Staging'){
 				steps{
 					echo 'Deploying to Staging'
-					deploy adapters: [tomcat8(credentialsId: 'fc29fbea-a440-4146-8bf0-dd8e0e199d22', path:'', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
+					deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8989')], contextPath: null, war: '**/*.war'
 				}
 				post{
 					success{
@@ -59,7 +59,7 @@ pipeline{
 				timeout(2){
 					input 'APprove Live Deployment?'
 				 }
-				deploy adapters: [tomcat8(credentialsId: 'fc29fbea-a440-4146-8bf0-dd8e0e199d22', path:'', url: 'http://localhost:8787')], contextPath: null, war: '**/*.war'
+				deploy adapters: [tomcat9(credentialsId: 'tomcat', path: '', url: 'http://localhost:8987')], contextPath: null, war: '**/*.war'
 			}
 			post{
 				success{
