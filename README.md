@@ -6,4 +6,4 @@ Also, since SSH authentication is enabled for my Git Repo, have to provide Git S
 Trying with mobile pass(CG Network)..
 Creating staging job and code quality check after the first job is build and it's artifact is created.
 Checking now with pipeline(Normal way). Added PROD with manual build permission....
-Checking now for Pipeline as a Code (Declarative Script).
+Checking now for Pipeline as a Code (Declarative Script) - With timeout set for approval for live-deployment.
